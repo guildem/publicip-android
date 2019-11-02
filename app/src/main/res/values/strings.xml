@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Public IP</string>
+
+    <string name="configure">Configure</string>
+    <string name="add_widget">Add widget</string>
+
+    <string name="view_title">Public IP</string>
+    <string name="view_text">000.000.000.000</string>
+    <string name="view_caption">tap to refresh</string>
+
+    <string name="ip_not_found">no network found</string>
+</resources>
