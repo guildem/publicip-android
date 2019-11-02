@@ -1,0 +1,11 @@
+<resources>
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/colorAppText</item>
+        <item name="colorPrimaryDark">@color/colorAppBackground</item>
+        <item name="colorAccent">@color/colorAppText</item>
+
+        <item name="android:windowBackground">@color/colorAppBackground</item>
+        <item name="android:textColor">@color/colorAppText</item>
+        <item name="android:progressTint">@color/colorAppText</item>
+    </style>
+</resources>
