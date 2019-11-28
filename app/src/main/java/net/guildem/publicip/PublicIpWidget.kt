@@ -8,6 +8,7 @@ import android.content.Intent
 import android.view.View
 import android.widget.RemoteViews
 import android.content.ComponentName
+import androidx.work.*
 
 private const val ACTION_REFRESH = "net.guildem.publicip.action.ACTION_REFRESH"
 
@@ -34,10 +35,8 @@ class PublicIpWidget : AppWidgetProvider() {
         super.onReceive(context, intent)
 
         if (context !== null && intent?.action === ACTION_REFRESH) {
-            IpFinder(context).update {
-                updateAllWidgets(context)
-            }
-            updateAllWidgets(context)
+            val manager = WorkManager.getInstance(context)
+            manager.enqueue(PublicIpWorker.getWorker())
         }
     }
 

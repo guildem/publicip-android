@@ -1,11 +1,16 @@
 package net.guildem.publicip
 
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import kotlinx.android.synthetic.main.public_ip_activity.*
+
 
 class PublicIpActivity : AppCompatActivity() {
 
@@ -13,11 +18,13 @@ class PublicIpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.public_ip_activity)
 
-        window.apply {
-            clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            statusBarColor = Color.TRANSPARENT
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.statusBarColor = Color.TRANSPARENT
         }
 
         view_layout.setOnClickListener { refreshData() }
@@ -30,12 +37,13 @@ class PublicIpActivity : AppCompatActivity() {
     }
 
     private fun refreshData() {
-        IpFinder(this).update {
-            PublicIpWidget.updateAllWidgets(baseContext)
-            refreshView()
-        }
-        PublicIpWidget.updateAllWidgets(baseContext)
-        refreshView()
+        val manager = WorkManager.getInstance(this)
+        val worker = PublicIpWorker.getWorker()
+
+        manager.getWorkInfoByIdLiveData(worker.id)
+            .observe(this, Observer<WorkInfo> { refreshView() })
+
+        manager.enqueue(worker)
     }
 
     private fun refreshView() {
