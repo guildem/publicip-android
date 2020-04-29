@@ -6,7 +6,9 @@
 
     <string name="view_title">Public IP</string>
     <string name="view_text">000.000.000.000</string>
+    <string name="view_share_description">touch to share</string>
     <string name="view_caption">tap to refresh</string>
 
     <string name="ip_not_found">no network found</string>
+    <string name="share_my_ip">Share my Public IP</string>
 </resources>
