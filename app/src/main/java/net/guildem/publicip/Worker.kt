@@ -34,7 +34,7 @@ class PublicIpWorker(context: Context, parameters: WorkerParameters)
     }
 
     override suspend fun doWork(): Result {
-        val data = PublicIpData(applicationContext)
+        val data = IpData(applicationContext)
 
         data.update(true)
         PublicIpWidget.updateAllWidgets(applicationContext)

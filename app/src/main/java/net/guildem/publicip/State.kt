@@ -2,7 +2,7 @@ package net.guildem.publicip
 
 import android.content.Context
 
-class PublicIpData(context: Context) {
+class IpData(context: Context) {
 
     private val prefs = context.getSharedPreferences("default", 0)
 

@@ -46,7 +46,7 @@ internal fun updateAppWidget(context: Context, manager: AppWidgetManager, id: In
     val intent = Intent(context, PublicIpWidget::class.java).apply { action = ACTION_REFRESH }
     val tapIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
 
-    val data = PublicIpData(context)
+    val data = IpData(context)
     val views = RemoteViews(context.packageName, R.layout.public_ip_widget)
 
     if (data.loadIsRefreshing()) {
