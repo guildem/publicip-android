@@ -8,6 +8,7 @@ import android.content.Intent
 import android.view.View
 import android.widget.RemoteViews
 import android.content.ComponentName
+import android.graphics.Color
 import androidx.work.*
 
 class MainWidget : AppWidgetProvider() {
@@ -19,7 +20,9 @@ class MainWidget : AppWidgetProvider() {
             val intent = Intent(context, MainWidget::class.java).apply { action = ACTION_REFRESH }
             val tapIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
 
+            val defaultTitle = context.getString(R.string.view_title)
             val data = State(context)
+            val sharedPreferences = context.getSharedPreferences("widget_$id", Context.MODE_PRIVATE)
             val views = RemoteViews(context.packageName, R.layout.main_widget)
 
             if (data.loadIsRefreshing()) {
@@ -31,7 +34,11 @@ class MainWidget : AppWidgetProvider() {
                 views.setViewVisibility(R.id.ip_text, View.VISIBLE)
                 views.setViewVisibility(R.id.progress_bar, View.INVISIBLE)
             }
+
+            views.setTextViewText(R.id.title_text, sharedPreferences.getString("title", defaultTitle))
+            views.setTextColor(R.id.title_text, sharedPreferences.getInt("color", Color.WHITE))
             views.setTextViewText(R.id.ip_text, data.loadCurrentIp() ?: context.getString(R.string.ip_not_found))
+            views.setTextColor(R.id.ip_text, sharedPreferences.getInt("color", Color.WHITE))
             views.setOnClickPendingIntent(R.id.layout, tapIntent)
 
             manager.updateAppWidget(id, views)
@@ -59,6 +66,15 @@ class MainWidget : AppWidgetProvider() {
         if (context !== null && intent?.action === ACTION_REFRESH) {
             val manager = WorkManager.getInstance(context)
             manager.enqueue(Worker.getWorker())
+        }
+    }
+
+    override fun onDeleted(context: Context?, ids: IntArray?) {
+        ids?.let {
+            for (id in ids) {
+                val sharedPreferences = context?.getSharedPreferences("widget_$id", Context.MODE_PRIVATE)
+                sharedPreferences?.edit()?.clear()?.apply()
+            }
         }
     }
 

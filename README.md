@@ -7,7 +7,7 @@
 App and Widget for Android. 
 Allows user to find its current public IP address.
 
-<img alt="Application" src="/fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" height="400" /> <img alt="Widget" src="/fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" height="400" />
+<img alt="Application" src="/fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" height="400" /> <img alt="Widget" src="/fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" height="400" /> <img alt="Widget" src="/fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" height="400" />
 
 The app uses [ipify API](https://www.ipify.org/) to find the IP Address.    
 Checks are done at each app load and at each tap on the app or the widget.

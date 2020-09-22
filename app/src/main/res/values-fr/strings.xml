@@ -1,11 +1,16 @@
 <resources>
     <string name="app_name">IP Publique</string>
 
-    <string name="configure">Configurer</string>
-    <string name="add_widget">Ajouter le widget</string>
+    <string name="configure_title">Configurer le Widget</string>
+    <string name="configure_validate">Valider</string>
+    <string name="configure_cancel">Annuler</string>
+    <string name="configure_lightness_info">Taper pour inverser les modes sombre et clair</string>
+    <string name="configure_text_label">Texte du titre</string>
+    <string name="configure_color_label">Couleur du titre</string>
 
     <string name="view_title">IP Publique</string>
     <string name="view_text">000.000.000.000</string>
+    <string name="view_color">#FFFFFF</string>
     <string name="view_share_description">toucher pour partager</string>
     <string name="view_caption">toucher pour actualiser</string>
 

@@ -1,11 +1,16 @@
 <resources>
     <string name="app_name">Public IP</string>
 
-    <string name="configure">Configure</string>
-    <string name="add_widget">Add widget</string>
+    <string name="configure_title">Configure widget</string>
+    <string name="configure_validate">Validate</string>
+    <string name="configure_cancel">Cancel</string>
+    <string name="configure_lightness_info">Tap to swap between light and dark mode</string>
+    <string name="configure_text_label">Title text</string>
+    <string name="configure_color_label">Title color</string>
 
     <string name="view_title">Public IP</string>
     <string name="view_text">000.000.000.000</string>
+    <string name="view_color">#FFFFFF</string>
     <string name="view_share_description">touch to share</string>
     <string name="view_caption">tap to refresh</string>
 

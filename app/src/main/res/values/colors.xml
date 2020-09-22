@@ -7,6 +7,8 @@
     <color name="colorAppBackground">#000000</color>
     <color name="colorAppText">#FFFFFF</color>
 
+    <color name="colorConfigBackground">@android:color/darker_gray</color>
+
     <color name="colorWidgetText">#FFFFFF</color>
 
     <color name="ic_launcher_background">#000000</color>
