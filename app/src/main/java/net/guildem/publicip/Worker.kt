@@ -14,8 +14,7 @@ import java.lang.Exception
 import java.net.URL
 import java.nio.charset.Charset
 
-class PublicIpWorker(context: Context, parameters: WorkerParameters)
-    : CoroutineWorker(context, parameters) {
+class Worker(context: Context, parameters: WorkerParameters) : CoroutineWorker(context, parameters) {
 
     companion object {
         const val Progress = "Progress"
@@ -25,19 +24,17 @@ class PublicIpWorker(context: Context, parameters: WorkerParameters)
                 .setRequiredNetworkType(if (forceConnected) NetworkType.CONNECTED else NetworkType.NOT_REQUIRED)
                 .build()
 
-            val work = OneTimeWorkRequestBuilder<PublicIpWorker>()
+            return OneTimeWorkRequestBuilder<Worker>()
                 .setConstraints(constraints)
                 .build()
-
-            return work
         }
     }
 
     override suspend fun doWork(): Result {
-        val data = IpData(applicationContext)
+        val data = State(applicationContext)
 
         data.update(true)
-        PublicIpWidget.updateAllWidgets(applicationContext)
+        MainWidget.updateAllWidgets(applicationContext)
         to(workDataOf(Progress to 0))
 
         try {
@@ -46,7 +43,7 @@ class PublicIpWorker(context: Context, parameters: WorkerParameters)
             data.update(false, null)
             WorkManager.getInstance(applicationContext).enqueue(getWorker(true))
         } finally {
-            PublicIpWidget.updateAllWidgets(applicationContext)
+            MainWidget.updateAllWidgets(applicationContext)
             to(workDataOf(Progress to 100))
         }
 

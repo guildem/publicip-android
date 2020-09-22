@@ -7,15 +7,14 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.work.WorkManager
-import kotlinx.android.synthetic.main.public_ip_activity.*
+import kotlinx.android.synthetic.main.main_activity.*
 
-class PublicIpActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.public_ip_activity)
+        setContentView(R.layout.main_activity)
 
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -39,16 +38,14 @@ class PublicIpActivity : AppCompatActivity() {
 
     private fun refreshData() {
         val manager = WorkManager.getInstance(this)
-        val worker = PublicIpWorker.getWorker()
+        val worker = Worker.getWorker()
 
-        manager.getWorkInfoByIdLiveData(worker.id)
-            .observe(this, Observer { refreshView() })
-
+        manager.getWorkInfoByIdLiveData(worker.id).observe(this, { refreshView() })
         manager.enqueue(worker)
     }
 
     private fun shareData() {
-        val data = PublicIpData(this)
+        val data = State(this)
         val shareText = data.loadCurrentIp() ?: getString(R.string.ip_not_found)
         val sendIntent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
@@ -60,7 +57,7 @@ class PublicIpActivity : AppCompatActivity() {
     }
 
     private fun refreshView() {
-        val data = PublicIpData(this)
+        val data = State(this)
         runOnUiThread {
             if (data.loadIsRefreshing()) {
                 progress_bar?.visibility = View.VISIBLE

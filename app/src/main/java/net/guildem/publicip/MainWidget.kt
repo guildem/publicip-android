@@ -10,14 +10,36 @@ import android.widget.RemoteViews
 import android.content.ComponentName
 import androidx.work.*
 
-private const val ACTION_REFRESH = "net.guildem.publicip.action.ACTION_REFRESH"
-
-class PublicIpWidget : AppWidgetProvider() {
+class MainWidget : AppWidgetProvider() {
 
     companion object {
+        private const val ACTION_REFRESH = "net.guildem.publicip.action.ACTION_REFRESH"
+
+        private fun updateAppWidget(context: Context, manager: AppWidgetManager, id: Int) {
+            val intent = Intent(context, MainWidget::class.java).apply { action = ACTION_REFRESH }
+            val tapIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
+
+            val data = State(context)
+            val views = RemoteViews(context.packageName, R.layout.main_widget)
+
+            if (data.loadIsRefreshing()) {
+                views.setViewVisibility(R.id.title_text, View.INVISIBLE)
+                views.setViewVisibility(R.id.ip_text, View.INVISIBLE)
+                views.setViewVisibility(R.id.progress_bar, View.VISIBLE)
+            } else {
+                views.setViewVisibility(R.id.title_text, View.VISIBLE)
+                views.setViewVisibility(R.id.ip_text, View.VISIBLE)
+                views.setViewVisibility(R.id.progress_bar, View.INVISIBLE)
+            }
+            views.setTextViewText(R.id.ip_text, data.loadCurrentIp() ?: context.getString(R.string.ip_not_found))
+            views.setOnClickPendingIntent(R.id.layout, tapIntent)
+
+            manager.updateAppWidget(id, views)
+        }
+
         fun updateAllWidgets(context: Context) {
             val manager = AppWidgetManager.getInstance(context)
-            val ids = manager.getAppWidgetIds(ComponentName(context, PublicIpWidget::class.java))
+            val ids = manager.getAppWidgetIds(ComponentName(context, MainWidget::class.java))
 
             for (id in ids) {
                 updateAppWidget(context, manager, id)
@@ -36,30 +58,8 @@ class PublicIpWidget : AppWidgetProvider() {
 
         if (context !== null && intent?.action === ACTION_REFRESH) {
             val manager = WorkManager.getInstance(context)
-            manager.enqueue(PublicIpWorker.getWorker())
+            manager.enqueue(Worker.getWorker())
         }
     }
 
-}
-
-internal fun updateAppWidget(context: Context, manager: AppWidgetManager, id: Int) {
-    val intent = Intent(context, PublicIpWidget::class.java).apply { action = ACTION_REFRESH }
-    val tapIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
-
-    val data = IpData(context)
-    val views = RemoteViews(context.packageName, R.layout.public_ip_widget)
-
-    if (data.loadIsRefreshing()) {
-        views.setViewVisibility(R.id.title_text, View.INVISIBLE)
-        views.setViewVisibility(R.id.ip_text, View.INVISIBLE)
-        views.setViewVisibility(R.id.progress_bar, View.VISIBLE)
-    } else {
-        views.setViewVisibility(R.id.title_text, View.VISIBLE)
-        views.setViewVisibility(R.id.ip_text, View.VISIBLE)
-        views.setViewVisibility(R.id.progress_bar, View.INVISIBLE)
-    }
-    views.setTextViewText(R.id.ip_text, data.loadCurrentIp() ?: context.getString(R.string.ip_not_found))
-    views.setOnClickPendingIntent(R.id.layout, tapIntent)
-
-    manager.updateAppWidget(id, views)
 }

@@ -6,6 +6,5 @@
 
         <item name="android:windowBackground">@color/colorAppBackground</item>
         <item name="android:textColor">@color/colorAppText</item>
-        <item name="android:progressTint">@color/colorAppText</item>
     </style>
 </resources>
