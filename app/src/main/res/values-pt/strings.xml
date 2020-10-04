@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">IP Público</string>
+
+    <string name="configure_title">Configurar widget</string>
+    <string name="configure_validate">Validar</string>
+    <string name="configure_cancel">Cancelar</string>
+    <string name="configure_lightness_info">Toque para alternar entre o modo claro e escuro</string>
+    <string name="configure_text_label">Texto do título</string>
+    <string name="configure_color_label">Cor do título</string>
+
+    <string name="view_title">IP Público</string>
+    <string name="view_text">000.000.000.000</string>
+    <string name="view_color">#FFFFFF</string>
+    <string name="view_share_description">toque para compartilhar</string>
+    <string name="view_caption">toque para atualizar</string>
+
+    <string name="ip_not_found">nenhuma rede encontrada</string>
+    <string name="share_my_ip">Compartilhar meu IP Público</string>
+</resources>

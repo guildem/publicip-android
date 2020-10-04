@@ -8,8 +8,8 @@ android {
 
     defaultConfig {
         applicationId "net.guildem.publicip"
-        versionCode 4
-        versionName "1.2.0"
+        versionCode 5
+        versionName "1.2.1"
 
         minSdkVersion 16
         targetSdkVersion 29
