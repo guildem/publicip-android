@@ -7,30 +7,32 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.text.TextUtils
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.widget.addTextChangedListener
 import androidx.work.WorkManager
-import kotlinx.android.synthetic.main.main_widget.*
-import kotlinx.android.synthetic.main.main_widget_activity.*
+import net.guildem.publicip.databinding.MainWidgetActivityBinding
 
 class MainWidgetActivity : AppCompatActivity() {
-    
+    private lateinit var binding: MainWidgetActivityBinding
     private var mDarkMode = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = MainWidgetActivityBinding.inflate(layoutInflater)
         setContentView(R.layout.main_widget_activity)
 
-        widget.setBackgroundResource(R.drawable.config_background)
+        binding.widget.layout.setBackgroundResource(R.drawable.config_background)
+        binding.widget.layout.setOnClickListener { toggleDarkMode(!mDarkMode) }
 
-        widget.setOnClickListener { toggleDarkMode(!mDarkMode) }
-        text_value.addTextChangedListener { applyWidgetValues() }
-        color_value.addTextChangedListener { applyWidgetValues() }
-        validate_button.setOnClickListener { validateAppWidget() }
-        cancel_button.setOnClickListener { finish() }
+        binding.textValue.addTextChangedListener { applyWidgetValues() }
+        binding.colorValue.addTextChangedListener { applyWidgetValues() }
+        binding.validateButton.setOnClickListener { validateAppWidget() }
+        binding.cancelButton.setOnClickListener { finish() }
 
         toggleDarkMode(true)
         applyWidgetValues()
@@ -39,15 +41,15 @@ class MainWidgetActivity : AppCompatActivity() {
     }
 
     private fun getWidgetText(): String {
-        val text = if (text_value.text.isNotEmpty()) text_value.text.toString() else getString(R.string.view_title)
+        val text = if (binding.textValue.text.isNotEmpty()) binding.textValue.text.toString() else getString(R.string.view_title)
         return if (TextUtils.isEmpty(text)) getString(R.string.view_title) else text
     }
 
     private fun getWidgetColor(): Int {
         return try {
-            Color.parseColor(color_value.text!!.toString())
+            Color.parseColor(binding.colorValue.text!!.toString())
         } catch (e: Exception) {
-            getColor(R.color.colorWidgetText)
+            ContextCompat.getColor(baseContext, R.color.colorWidgetText)
         }
     }
 
@@ -55,27 +57,27 @@ class MainWidgetActivity : AppCompatActivity() {
         mDarkMode = darkMode
         
         val color = if (darkMode) Color.BLACK else Color.WHITE
-        widget.backgroundTintList = ColorStateList.valueOf(ColorUtils.setAlphaComponent(color, 0xAF))
+        binding.widget.layout.backgroundTintList = ColorStateList.valueOf(ColorUtils.setAlphaComponent(color, 0xAF))
     }
 
     private fun applyWidgetValues() {
-        title_text.visibility = View.INVISIBLE
-        ip_text.visibility = View.INVISIBLE
-        progress_bar.visibility = View.VISIBLE
+        binding.widget.titleText.visibility = View.INVISIBLE
+        binding.widget.ipText.visibility = View.INVISIBLE
+        binding.widget.progressBar.visibility = View.VISIBLE
 
-        Handler().postDelayed({
-            title_text.text = getWidgetText()
-            ip_text.text = getString(R.string.view_text)
+        Handler(Looper.getMainLooper()).postDelayed({
+            binding.widget.titleText.text = getWidgetText()
+            binding.widget.ipText.text = getString(R.string.view_text)
 
             val color = getWidgetColor()
-            title_text.setTextColor(color)
-            ip_text.setTextColor(color)
+            binding.widget.titleText.setTextColor(color)
+            binding.widget.ipText.setTextColor(color)
 
-            title_text.visibility = View.VISIBLE
-            ip_text.visibility = View.VISIBLE
-            progress_bar.visibility = View.INVISIBLE
+            binding.widget.titleText.visibility = View.VISIBLE
+            binding.widget.ipText.visibility = View.VISIBLE
+            binding.widget.progressBar.visibility = View.INVISIBLE
 
-            widget.requestLayout()
+            binding.widget.layout.requestLayout()
         }, 300)
     }
 

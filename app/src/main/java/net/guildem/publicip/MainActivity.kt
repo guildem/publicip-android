@@ -2,32 +2,26 @@ package net.guildem.publicip
 
 import android.content.Intent
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.work.WorkManager
-import kotlinx.android.synthetic.main.main_activity.*
+import net.guildem.publicip.databinding.MainActivityBinding
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: MainActivityBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = MainActivityBinding.inflate(layoutInflater)
         setContentView(R.layout.main_activity)
 
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.statusBarColor = Color.TRANSPARENT
-        }
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor = Color.TRANSPARENT
 
-        view_layout.setOnClickListener { refreshData() }
-
-        share_button.setOnClickListener { shareData() }
+        binding.viewLayout.setOnClickListener { refreshData() }
+        binding.shareButton.setOnClickListener { shareData() }
     }
 
     override fun onResume() {
@@ -40,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         val manager = WorkManager.getInstance(this)
         val worker = Worker.getWorker()
 
-        manager.getWorkInfoByIdLiveData(worker.id).observe(this, { refreshView() })
+        manager.getWorkInfoByIdLiveData(worker.id).observe(this) { refreshView() }
         manager.enqueue(worker)
     }
 
@@ -60,13 +54,13 @@ class MainActivity : AppCompatActivity() {
         val data = State(this)
         runOnUiThread {
             if (data.loadIsRefreshing()) {
-                progress_bar?.visibility = View.VISIBLE
-                ip_text.visibility = View.INVISIBLE
+                binding.progressBar.visibility = View.VISIBLE
+                binding.ipText.visibility = View.INVISIBLE
             } else {
-                progress_bar?.visibility = View.INVISIBLE
-                ip_text.visibility = View.VISIBLE
+                binding.progressBar.visibility = View.INVISIBLE
+                binding.ipText.visibility = View.VISIBLE
             }
-            ip_text.text = data.loadCurrentIp() ?: getString(R.string.ip_not_found)
+            binding.ipText.text = data.loadCurrentIp() ?: getString(R.string.ip_not_found)
         }
     }
 
